@@ -22,6 +22,11 @@ return [
             'dbname' => 'stockrestdb',
             'user' => 'root',
             'pass' => ''
-        ]
+        ],
+
+        // jwt settings //supersecretkeyyoushouldnotcommittogithub
+        "jwt" => [
+            'secret' => 'somkietsupersecretkey2020'
+        ],
     ],
 ];

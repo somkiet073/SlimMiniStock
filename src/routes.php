@@ -3,6 +3,7 @@
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use \Firebase\JWT\JWT;
 
 return function (App $app) {
     $container = $app->getContainer();
@@ -37,6 +38,36 @@ return function (App $app) {
             echo 'This is Delete data route';
         });
 
+    });
+
+    // Login and Get Token
+    $app->post('/login', function (Request $request, Response $response, array $args) {
+
+        $input = $request->getParsedBody();
+        $password = sha1($input['password']);
+
+        $sql = "SELECT * FROM users WHERE username= :username";
+        $sth = $this->db->prepare($sql);
+        $sth->bindParam("username", $input['username']);
+        $sth->execute();
+        $user = $sth->fetchObject();
+     
+        // verify username address.
+        if(!$user) {
+            return $this->response->withJson(['error' => true, 'message' => 'These credentials do not match our records.']);  
+        }
+     
+        // verify password.
+        if ($password  != $user->password) {
+            return $this->response->withJson(['error' => true, 'message' => 'These credentials do not match our records.']);  
+        }
+     
+        $settings = $this->get('settings'); // get settings array.
+        
+        $token = JWT::encode(['id' => $user->id, 'username' => $user->username], $settings['jwt']['secret'], "HS256");
+     
+        return $this->response->withJson(['token' => $token]);
+     
     });
 
     // Api Routing Group 

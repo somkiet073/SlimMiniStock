@@ -15,7 +15,25 @@ session_start();
 
 // Instantiate the app
 $settings = require __DIR__ . '/../src/settings.php';
+
+//Override the default Not Found Handler before creating App
+// $c['notFoundHandler'] = function ($c) {
+//     return function ($request, $response) use ($c) {
+//         return $response->withStatus(404)
+//             ->withHeader('Content-Type', 'text/html')
+//             ->write('Page not found');
+//     };
+// };
+
 $app = new \Slim\App($settings);
+
+// Basic Auth
+// $app->add(new Tuupola\Middleware\HttpBasicAuthentication([
+//     "users" => [
+//         "admin" => "1234",
+//         "user" => "1234"
+//     ]
+// ]));
 
 // Set up dependencies
 $dependencies = require __DIR__ . '/../src/dependencies.php';
